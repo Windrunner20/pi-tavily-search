@@ -22,7 +22,9 @@ jobs:
       - run: npm ci
       - run: npm run check
       - name: Verify tag matches package version
-        run: test "${GITHUB_REF_NAME}" = "v$(node -p \"require('./package.json').version\")"
+        run: |
+          package_version="$(node -p "require('./package.json').version")"
+          test "$GITHUB_REF_NAME" = "v$package_version"
       - name: Build package artifact
         run: npm pack
       - name: Create GitHub release
