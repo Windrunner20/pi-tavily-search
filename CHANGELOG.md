@@ -9,6 +9,7 @@ All notable changes to this project are documented here. The format follows [Kee
 ### Added
 
 - `tavily_search` with basic, advanced, fast, and ultra-fast search depths.
+- Installation from npm or a pinned GitHub tag.
 - Google-compatible tool schema and bounded query/result parameters.
 - Compact citation-ready output with an 8KB per-call and 16KB per-turn budget.
 - Private raw-response artifacts for raw or truncated searches.

@@ -28,5 +28,5 @@ for (const required of [
 for (const forbidden of ["test/extension.test.ts", ".github/workflows/ci.yml"]) {
   assert.ok(!files.has(forbidden), `package unexpectedly includes ${forbidden}`);
 }
-rmSync(new URL(`../${packed.filename}`, import.meta.url));
+rmSync(new URL(`../${packed.filename}`, import.meta.url), { force: true });
 console.log(`Package check passed: ${packed.filename}, ${packed.size} bytes`);

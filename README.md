@@ -33,7 +33,19 @@ This package keeps useful search evidence in context while moving complete raw r
 
 ## Installation
 
-Install the tagged GitHub release:
+Recommended npm installation:
+
+```bash
+pi install npm:@windrunner20/pi-tavily-search
+```
+
+Pin the stable v1.0.0 release for reproducible installations:
+
+```bash
+pi install npm:@windrunner20/pi-tavily-search@1.0.0
+```
+
+Alternatively, install the tagged GitHub source:
 
 ```bash
 pi install git:github.com/Windrunner20/pi-tavily-search@v1.0.0
@@ -42,7 +54,7 @@ pi install git:github.com/Windrunner20/pi-tavily-search@v1.0.0
 Restart Pi after installation. To try without installing:
 
 ```bash
-pi -e git:github.com/Windrunner20/pi-tavily-search@v1.0.0
+pi -e npm:@windrunner20/pi-tavily-search@1.0.0
 ```
 
 For local development:

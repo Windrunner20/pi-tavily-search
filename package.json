@@ -31,6 +31,9 @@
     "SECURITY.md",
     "LICENSE"
   ],
+  "publishConfig": {
+    "access": "public"
+  },
   "pi": {
     "extensions": [
       "./extensions/index.ts"
@@ -40,6 +43,7 @@
     "test": "tsx --test test/*.test.ts",
     "typecheck": "tsc --noEmit",
     "check": "npm run typecheck && npm test && npm run pack:check",
+    "prepublishOnly": "npm run check",
     "pack:check": "node scripts/check-package.mjs",
     "test:integration": "tsx --test test/integration/**/*.test.ts"
   },
