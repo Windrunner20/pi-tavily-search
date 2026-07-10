@@ -4,6 +4,12 @@ All notable changes to this project are documented here. The format follows [Kee
 
 ## [Unreleased]
 
+### Documentation
+
+- Added a complete Simplified Chinese README.
+- Documented that npm, pnpm, and Yarn use the same npm Registry package.
+- Clarified that Pi users should use `pi install npm:...` because direct package-manager installation does not register a Pi extension.
+
 ## [1.0.0] - 2026-07-10
 
 ### Added

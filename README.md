@@ -1,6 +1,9 @@
 # Pi Tavily Search
 
+[English](README.md) | [简体中文](README.zh-CN.md)
+
 [![CI](https://github.com/Windrunner20/pi-tavily-search/actions/workflows/ci.yml/badge.svg)](https://github.com/Windrunner20/pi-tavily-search/actions/workflows/ci.yml)
+[![npm](https://img.shields.io/npm/v/%40windrunner20%2Fpi-tavily-search)](https://www.npmjs.com/package/@windrunner20/pi-tavily-search)
 [![Release](https://img.shields.io/github/v/release/Windrunner20/pi-tavily-search)](https://github.com/Windrunner20/pi-tavily-search/releases)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
@@ -61,6 +64,36 @@ For local development:
 
 ```bash
 pi install /absolute/path/to/pi-tavily-search
+```
+
+### npm, pnpm, and Yarn
+
+The package is published once to the public npm Registry:
+
+```text
+https://registry.npmjs.org
+```
+
+npm, pnpm, and Yarn all resolve `@windrunner20/pi-tavily-search` from that same registry. There is no separate pnpm registry release to perform. These package-manager commands can download the package:
+
+```bash
+npm install @windrunner20/pi-tavily-search
+pnpm add @windrunner20/pi-tavily-search
+yarn add @windrunner20/pi-tavily-search
+```
+
+However, Pi users should prefer:
+
+```bash
+pi install npm:@windrunner20/pi-tavily-search
+```
+
+`pi install` both downloads the package and registers its `pi.extensions` manifest in Pi's settings. Running `pnpm add` or `npm install` in an arbitrary project only adds a Node dependency; it does not automatically register the extension with Pi.
+
+To verify availability through pnpm without installing:
+
+```bash
+pnpm view @windrunner20/pi-tavily-search
 ```
 
 ## Configuration
