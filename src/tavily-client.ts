@@ -3,6 +3,26 @@ import type { SearchDepth, TavilySearchResponse } from "./types.js";
 const SEARCH_ENDPOINT = "https://api.tavily.com/search";
 const MAX_RESPONSE_BYTES = 32 * 1024 * 1024;
 
+function createDeadlineSignal(
+  parentSignal: AbortSignal | undefined,
+  timeoutMs: number,
+): { signal: AbortSignal; cleanup(): void } {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => {
+    controller.abort(new Error(`Tavily request timed out after ${timeoutMs}ms.`));
+  }, timeoutMs);
+  const abortFromParent = () => controller.abort(parentSignal?.reason);
+  if (parentSignal?.aborted) abortFromParent();
+  else parentSignal?.addEventListener("abort", abortFromParent, { once: true });
+  return {
+    signal: controller.signal,
+    cleanup() {
+      clearTimeout(timeout);
+      parentSignal?.removeEventListener("abort", abortFromParent);
+    },
+  };
+}
+
 async function readResponseText(response: Response, maxBytes: number): Promise<string> {
   const declaredLength = Number(response.headers.get("content-length"));
   if (Number.isFinite(declaredLength) && declaredLength > maxBytes) {
@@ -50,40 +70,43 @@ export async function searchTavily(
   signal: AbortSignal | undefined,
   timeoutMs: number,
 ): Promise<TavilySearchResponse> {
-  const timeoutSignal = AbortSignal.timeout(timeoutMs);
-  const combinedSignal = signal ? AbortSignal.any([signal, timeoutSignal]) : timeoutSignal;
-  const response = await fetch(SEARCH_ENDPOINT, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${apiKey}`,
-    },
-    body: JSON.stringify({
-      query: request.query,
-      search_depth: request.searchDepth,
-      max_results: request.maxResults,
-      include_answer: request.includeAnswer,
-      include_raw_content: request.includeRawContent ? "markdown" : false,
-      include_images: request.includeImages,
-    }),
-    signal: combinedSignal,
-  });
-
-  const responseText = await readResponseText(response, MAX_RESPONSE_BYTES);
-  if (!response.ok) {
-    throw new TavilyHttpError(response.status, response.statusText, responseText);
-  }
-
-  let data: unknown;
+  const deadline = createDeadlineSignal(signal, timeoutMs);
   try {
-    data = JSON.parse(responseText);
-  } catch (error) {
-    throw new Error("Tavily returned an invalid JSON response.", { cause: error });
+    const response = await fetch(SEARCH_ENDPOINT, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${apiKey}`,
+      },
+      body: JSON.stringify({
+        query: request.query,
+        search_depth: request.searchDepth,
+        max_results: request.maxResults,
+        include_answer: request.includeAnswer,
+        include_raw_content: request.includeRawContent ? "markdown" : false,
+        include_images: request.includeImages,
+      }),
+      signal: deadline.signal,
+    });
+
+    const responseText = await readResponseText(response, MAX_RESPONSE_BYTES);
+    if (!response.ok) {
+      throw new TavilyHttpError(response.status, response.statusText, responseText);
+    }
+
+    let data: unknown;
+    try {
+      data = JSON.parse(responseText);
+    } catch (error) {
+      throw new Error("Tavily returned an invalid JSON response.", { cause: error });
+    }
+    if (!data || typeof data !== "object" || Array.isArray(data)) {
+      throw new Error("Tavily returned an invalid JSON response.");
+    }
+    return data as TavilySearchResponse;
+  } finally {
+    deadline.cleanup();
   }
-  if (!data || typeof data !== "object" || Array.isArray(data)) {
-    throw new Error("Tavily returned an invalid JSON response.");
-  }
-  return data as TavilySearchResponse;
 }
 
 export class TavilyHttpError extends Error {

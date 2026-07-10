@@ -212,7 +212,7 @@ test("times out a stalled Tavily request", async () => {
   await harness.emit("turn_start");
   await assert.rejects(
     harness.tool.execute("timeout", { query: "slow" }),
-    /timeout|aborted/i,
+    /timed out|timeout|aborted/i,
   );
 });
 

@@ -28,7 +28,7 @@ This package keeps useful search evidence in context while moving complete raw r
 ## Requirements
 
 - Pi coding agent `0.80.6` or later.
-- Node.js 20 or later.
+- Node.js 22 or later.
 - A [Tavily API key](https://tavily.com/) for normal keyed access.
 
 ## Installation

@@ -20,7 +20,7 @@
   },
   "homepage": "https://github.com/Windrunner20/pi-tavily-search#readme",
   "engines": {
-    "node": ">=20"
+    "node": ">=22"
   },
   "files": [
     "extensions",
